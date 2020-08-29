@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalController.dismiss()">
+        close
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Add Expense</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveExpense()">
+        save
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid fixed>
+    <ion-row>
+      {{currentExpense?.expenseImages | json}}
+      <ion-col size="6"
+               *ngFor="let photo of currentExpense?.images; index as position">
+        <img src="{{ photo }}" />
+      </ion-col>
+
+
+      <ion-button (click)=" captureImage()">
+        <ion-icon name="camera"></ion-icon>
+      </ion-button>
+
+    </ion-row>
+  </ion-grid>
+
+
+  <form [formGroup]="expenseForm" id="clientForm" role="form">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Currency</ion-label>
+        <input type="tel" style="background: #000; border: none; height: 100%; width: 100%;" currencyMask [options]="currencyOptions" formControlName="amount" />
+      </ion-item>
+
+
+      <!-- <ion-label style="margin-left: 1.2rem;" position="stacked">Receipt Amount</ion-label>
+      <currency-input precision="2" [amount]="currentExpense?.amount || '0'" (amountEntered)="amountChanged($event)"></currency-input> -->
+      <ion-item>
+        <ion-label position="stacked">Expense Date</ion-label>
+        <ion-datetime formControlName="expenseDate" display-format="DD MMM YYYY"></ion-datetime>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea formControlName="description" color="light"></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+
+</ion-content>
