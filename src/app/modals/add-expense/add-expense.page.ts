@@ -36,7 +36,7 @@ export class AddExpensePage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private captureService: CaptureService,
-    private modalController: ModalController,
+    public modalController: ModalController,
     public toastController: ToastController,
     private expensesService: ExpensesService,
     private alertController: AlertController
