@@ -20,7 +20,7 @@
       <ion-title size="large">Expenses</ion-title>
     </ion-toolbar>
     <ion-toolbar>
-      <ion-searchbar></ion-searchbar>
+      <ion-searchbar (ionChange)="filterExpenses($event)" debounce="400" placeholder="Filter Expenses" showCancelButton="focus"></ion-searchbar>
     </ion-toolbar>
   </ion-header>
 
@@ -30,32 +30,35 @@
     </ion-list-header>
 
     <ion-item-divider>
-      <ion-label>
-        Total: {{CurrentExpenseTotal | currency: 'GBP'}}
-      </ion-label>
+      <ion-label> Total: {{CurrentExpenseTotal | currency: 'GBP'}} </ion-label>
     </ion-item-divider>
     <ion-item-sliding #slidingItem *ngFor="let expense of CurrentExpenses | async">
+      <ion-item-options side="start">
+        <ion-item-option color="success" (click)="toggleClaimed(expense, slidingItem)">
+          <ion-icon name="create-outline"></ion-icon>
+          Toggle Claimed
+        </ion-item-option>
+      </ion-item-options>
       <ion-item (click)="editExpense(expense)">
         <ion-avatar slot="start">
-          <img style="background:#fff;" src="{{expense?.images[0] || '../../assets/svgs/mobile-payments.svg'}}">
+          <img style="background: #fff" src="{{expense?.images[0] || '../../assets/svgs/mobile-payments.svg'}}" />
         </ion-avatar>
         <ion-label>
           <h2>{{expense.amount | currency: 'GBP' }}</h2>
           <h3>{{expense.expenseDate | date: 'short' : 'en-GB' }}</h3>
           <p>{{expense.description}}</p>
         </ion-label>
+        <ion-note *ngIf="expense.claimed" slot="end">
+          <ion-icon color="success" name="checkmark-circle-outline"></ion-icon>
+        </ion-note>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="deleteExpense(expense, slidingItem)">
           <ion-icon name="trash-outline"></ion-icon>
           delete
         </ion-item-option>
-        <ion-item-option (click)="editExpense(expense, slidingItem)">
-          <ion-icon name="create-outline"></ion-icon>Edit
-        </ion-item-option>
+        <ion-item-option (click)="editExpense(expense, slidingItem)"> <ion-icon name="create-outline"></ion-icon>Edit </ion-item-option>
       </ion-item-options>
-
     </ion-item-sliding>
   </ion-list>
-
 </ion-content>

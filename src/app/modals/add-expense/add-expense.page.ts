@@ -1,15 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CaptureService } from 'src/app/services/capture.service';
-import { ModalController, ToastController } from '@ionic/angular';
-import { ExpenseImage, ExpenseSaveData } from "../../interfaces/interfaces";
+import { ModalController, ToastController, AlertController } from '@ionic/angular';
+import { ExpenseSaveData } from '../../interfaces/interfaces';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {
-  Plugins, CameraResultType, Capacitor, FilesystemDirectory,
-  CameraPhoto, CameraSource
-} from '@capacitor/core';
+import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { ExpensesService } from 'src/app/services/expenses-service.service';
-
-const { Camera, Filesystem, Storage } = Plugins;
+const { Camera } = Plugins;
+import { CurrencyMaskConfig } from 'ngx-currency';
 
 @Component({
   selector: 'app-add-expense',
@@ -17,14 +14,24 @@ const { Camera, Filesystem, Storage } = Plugins;
   styleUrls: ['./add-expense.page.scss'],
 })
 export class AddExpensePage implements OnInit {
-
   @Input() expenseToEdit: ExpenseSaveData;
   expenseForm: FormGroup;
   expenseId: string;
+  action: string = 'Create';
   currentExpense: ExpenseSaveData;
-  currencyOptions = {
-    prefix: '£'
-  }
+  currencyOptions: CurrencyMaskConfig = {
+    prefix: '£',
+    align: 'left',
+    allowNegative: false,
+    allowZero: false,
+    decimal: '.',
+    precision: 2,
+    suffix: '',
+    thousands: ',',
+    nullable: false,
+    min: null,
+    max: null,
+  };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,14 +39,11 @@ export class AddExpensePage implements OnInit {
     private modalController: ModalController,
     public toastController: ToastController,
     private expensesService: ExpensesService,
-  ) {
-
-  }
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
-
-    console.log(this.expenseToEdit);
-
+    this.action = this.expenseToEdit ? 'Edit' : 'Create';
     this.currentExpense = {
       id: this.generateUniqueId(),
       amount: 0,
@@ -47,6 +51,7 @@ export class AddExpensePage implements OnInit {
       description: '',
       expenseDate: new Date().toISOString(),
       timeStamp: new Date().toISOString(),
+      claimed: false,
       ...this.expenseToEdit,
     };
 
@@ -54,6 +59,7 @@ export class AddExpensePage implements OnInit {
       amount: [this.currentExpense.amount, [Validators.required]],
       expenseDate: [this.currentExpense.expenseDate, [Validators.required]],
       description: [this.currentExpense.description],
+      claimed: [this.currentExpense.claimed],
     });
   }
 
@@ -62,18 +68,13 @@ export class AddExpensePage implements OnInit {
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
       quality: 100,
-
     });
 
-    const base64Image = await this.captureService.readAsBase64(expenseImage)
+    const base64Image = await this.captureService.readAsBase64(expenseImage);
     this.currentExpense.images.unshift(base64Image);
-
-    console.log(this.currentExpense);
-
   }
 
   async saveExpense() {
-
     const expenseSaveData: ExpenseSaveData = {
       id: this.currentExpense.id,
       // id: '_tohody8sb',
@@ -81,35 +82,29 @@ export class AddExpensePage implements OnInit {
       images: [...this.currentExpense?.images],
       expenseDate: this.expenseForm.value?.expenseDate,
       description: this.expenseForm.value?.description || '',
-      timeStamp: this.currentExpense?.timeStamp || new Date().toISOString()
+      timeStamp: this.currentExpense?.timeStamp || new Date().toISOString(),
+      claimed: this.expenseForm.value?.claimed,
+    };
+
+    if (!expenseSaveData.expenseDate) {
+      return this.presentAlert('you must add an expense date');
+    }
+    if (!expenseSaveData.amount || expenseSaveData.amount === 0) {
+      return this.presentAlert('You must enter a valid expense amount');
     }
 
     try {
-      await this.createOrUpdateExpense(expenseSaveData)
+      await this.createOrUpdateExpense(expenseSaveData);
       this.presentToast('Expense has been logged');
       this.modalController.dismiss();
     } catch (e) {
-      console.error(e)
-      this.presentToast(`Error: ${e}`)
+      console.error(e);
+      this.presentToast(`Error: ${e}`);
     }
   }
 
   async createOrUpdateExpense(expense) {
-    console.log(expense);
-    // This is a non-scalable way of storing this data. A full Read of all expenses followed
-    // by updating / adding a value is not ideal, however remains performant for a this mvp. 
-    // we need to implement a backend solution before this could be released to prod especially as
-    // we aim for a better solution to image storage than base64. 
-    const savedExpenses = await this.expensesService.getFromStorage('expenses') || [];
-    const elementsIndex = savedExpenses.findIndex(element => element.id === expense.id);
-
-    let newSaveArray = [...savedExpenses]
-    if (elementsIndex > -1) {
-      newSaveArray[elementsIndex] = { ...expense }
-    } else {
-      newSaveArray.unshift(expense);
-    }
-    return this.expensesService.setObject('expenses', newSaveArray);
+    this.expensesService.createOrUpdateExpense(expense);
   }
 
   generateUniqueId() {
@@ -125,4 +120,17 @@ export class AddExpensePage implements OnInit {
     toast.present();
   }
 
+  deleteImage(position) {
+    this.currentExpense.images.splice(position, 1);
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      header: 'Invalid form',
+      message: message,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
 }
