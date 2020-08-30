@@ -8,6 +8,7 @@ You can view the PWA version of this app at [https://expensehub.netlify.app](htt
 
 ## Usage
 
+### Developing
 1. clone repo
 
 2. Ensure you have installed ionic cli and capacitor as per these [instructions](https://ionicframework.com/docs/intro/cli)  
@@ -15,6 +16,13 @@ You can view the PWA version of this app at [https://expensehub.netlify.app](htt
 3. run `npm install`
 
 4. run `ionic serve` for dev server and live reloading.
+
+### iOS / Android
+1. run `ionic build --prod`
+
+2. run `npx cap sync`
+
+3. run `npx cap open ios` or `npx cap open android` which will launch xCode / Android Studio with the app read to run in simulator (note the camera will not work in the simulator)
 
 ## Limitations
 
