@@ -19,12 +19,12 @@
       </ion-buttons>
       <ion-title size="large">Expenses</ion-title>
     </ion-toolbar>
-    <ion-toolbar>
+    <ion-toolbar *ngIf="(CurrentExpenses | async)?.length">
       <ion-searchbar (ionChange)="filterExpenses($event)" debounce="400" placeholder="Filter Expenses" showCancelButton="focus"></ion-searchbar>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
+  <ion-list *ngIf="(CurrentExpenses | async)?.length">
     <ion-list-header>
       <ion-label> Current Expenses</ion-label>
     </ion-list-header>
@@ -57,8 +57,24 @@
           <ion-icon name="trash-outline"></ion-icon>
           delete
         </ion-item-option>
-        <ion-item-option (click)="editExpense(expense, slidingItem)"> <ion-icon name="create-outline"></ion-icon>Edit </ion-item-option>
+        <ion-item-option (click)="editExpense(expense, slidingItem)">
+          <ion-icon name="create-outline"></ion-icon>Edit
+        </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+
+
+  <!-- Show this if there aren't any expenses to show in the list -->
+  <ng-container *ngIf="!(CurrentExpenses | async)?.length">
+    <div class="ion-padding ion-text-center">
+      <div style="background: #f3f3f3; border-radius: 10px;">
+        <img class="ion-padding ion-margin" src="../../assets/svgs/mobile-payments.svg" alt="">
+      </div>
+      <h2>Welcome to ExpenseHub</h2>
+      <h4>To get started click the + button to add your first expense</h4>
+    </div>
+  </ng-container>
+
+
 </ion-content>

@@ -40,7 +40,7 @@ export class AddExpensePage implements OnInit {
     public toastController: ToastController,
     private expensesService: ExpensesService,
     private alertController: AlertController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.action = this.expenseToEdit ? 'Edit' : 'Create';
@@ -115,7 +115,7 @@ export class AddExpensePage implements OnInit {
     const toast = await this.toastController.create({
       message: message,
       duration: 1500,
-      position: 'top',
+      position: 'bottom',
     });
     toast.present();
   }

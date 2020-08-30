@@ -1,5 +1,5 @@
 {
-  "name": "receipts",
+  "name": "ExpenseHub",
   "integrations": {
     "capacitor": {}
   },

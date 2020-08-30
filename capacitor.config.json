@@ -1,12 +1,12 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "receipts",
+  "appId": "io.expensehub.app",
+  "appName": "ExpenseHub",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 3000
     }
   },
   "cordova": {}
