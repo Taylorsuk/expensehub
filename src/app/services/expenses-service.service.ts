@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 
@@ -10,7 +10,8 @@ export class ExpensesService {
 
   // BehaviorSubject chosen over Subject or Observable as it stored values in memory
   // shares data, bi-directional, replay the message stream and we can set an initial value
-  // in this case an empty array. 
+  // in this case an empty array. We do not need to create an observable of this as we will 
+  // be using the async pipe in templates or getting static values for updating
   currentExpenses = new BehaviorSubject([]);
 
   constructor() { }
