@@ -2,12 +2,13 @@
 
 This app used Ionic and Capacitor to enable an offline capable, zero backend PWA, iOS and Android App for taking pictures of receipts, entering amounts, calculating totals and tracking which expenses have been claimed. 
 
+![](expenses-demo.gif)
+
 ## Preview - PWA
 
 You can view the PWA version of this app at [https://expensehub.netlify.app](https://expensehub.netlify.app/). This App can be added to the homescreen or installed as a PWA on your desktop. 
 
 ## Usage
-
 ### Developing
 1. clone repo
 

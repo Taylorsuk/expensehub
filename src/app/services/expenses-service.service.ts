@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ExpenseSaveData } from '../interfaces/interfaces';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 
@@ -8,9 +7,13 @@ const { Storage } = Plugins;
   providedIn: 'root',
 })
 export class ExpensesService {
+
+  // BehaviorSubject chosen over Subject or Observable as it stored values in memory
+  // shares data, bi-directional, replay the message stream and we can set an initial value
+  // in this case an empty array. 
   currentExpenses = new BehaviorSubject([]);
 
-  constructor() {}
+  constructor() { }
 
   async loadCurrentExpenses() {
     const ret = await Storage.get({ key: 'expenses' });

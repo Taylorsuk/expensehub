@@ -1,6 +1,4 @@
 export interface ExpenseImage {
-  // path: string;
-  // viewPath: string;
   base64?: string;
 }
 

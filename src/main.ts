@@ -5,6 +5,8 @@ import { environment } from './environments/environment';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
 // Call the element loader after the platform has been bootstrapped
+// custom elements allows us to use things like the camera in a PWA via 
+// capacitor
 defineCustomElements(window);
 
 if (environment.production) {

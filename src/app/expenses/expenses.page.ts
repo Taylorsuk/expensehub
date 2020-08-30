@@ -9,9 +9,10 @@ import { ExpenseSaveData } from '../interfaces/interfaces';
 @Component({
   selector: 'expenses',
   templateUrl: 'expenses.page.html',
-  styleUrls: ['expenses.page.scss'],
 })
+
 export class ExpensesPage {
+
   get CurrentExpenses(): Observable<ExpenseSaveData[]> {
     return this.expensesService.currentExpenses;
   }
