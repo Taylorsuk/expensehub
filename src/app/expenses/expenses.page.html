@@ -67,8 +67,8 @@
 
   <!-- Show this if there aren't any expenses to show in the list -->
   <ng-container *ngIf="!(CurrentExpenses | async)?.length">
-    <div class="ion-padding ion-text-center">
-      <div style="background: #f3f3f3; border-radius: 10px;">
+    <div class="ion-padding ion-text-center ">
+      <div style="background: #f3f3f3; border-radius: 10px; max-width: 300px; margin: 40px auto;">
         <img class="ion-padding ion-margin" src="../../assets/svgs/mobile-payments.svg" alt="">
       </div>
       <h2>Welcome to ExpenseHub</h2>
